@@ -1,0 +1,24 @@
+{
+  "name": "gita-data",
+  "version": "1.0.0",
+  "description": "This project follows section: *Summary of best option for generous free-tier Gita API implementation* in [this blog post](https://raviswdev.blogspot.com/2025/12/create-gita-json-file-rest-api-hosted.html) to create a static Bhagavad Gita JSON files API hosted on GitHub Pages. It is an in-progress project.",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "gh-pages -d data",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ravisiyer/gita-data.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ravisiyer/gita-data/issues"
+  },
+  "homepage": "https://github.com/ravisiyer/gita-data#readme",
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
+  }
+}
