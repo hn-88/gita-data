@@ -1,0 +1,1 @@
+As this folder's contents in the source repo: https://github.com/gita/gita, takes up 112 MB in local PC, and as I do not need it, as of now, I have removed the verse recitation folders and files (mp3 files mainly, it seems).
