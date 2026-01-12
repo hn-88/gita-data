@@ -1,0 +1,8 @@
+From a clean directory:
+
+node split-commentary.js commentary-test.json
+node verify-split-output.js
+
+Expected final output:
+Commentary split completed successfully.
+✅ All split-commentary tests passed successfully.

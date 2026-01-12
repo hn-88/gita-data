@@ -1,0 +1,13 @@
+commentaries/
+  author1/
+    lang1/
+      chapter1.json   (1 entry)
+      chapter2.json   (1 entry)
+      chapter3.json   (1 entry)
+  author2/
+    lang2/
+      chapter1.json   (1 entry)
+      chapter2.json   (1 entry)
+  author3/
+    lang3/
+      chapter3.json   (1 entry)

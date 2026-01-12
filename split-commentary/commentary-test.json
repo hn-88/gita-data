@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "authorName": "Author A",
+    "author_id": 1,
+    "language_id": 1,
+    "lang": "english",
+    "verse_id": 1,
+    "verseNumber": 1,
+    "description": "A1 Eng Ch1 V1"
+  },
+  {
+    "id": 2,
+    "authorName": "Author A",
+    "author_id": 1,
+    "language_id": 1,
+    "lang": "english",
+    "verse_id": 48,
+    "verseNumber": 1,
+    "description": "A1 Eng Ch2 V1"
+  },
+  {
+    "id": 3,
+    "authorName": "Author A",
+    "author_id": 1,
+    "language_id": 1,
+    "lang": "english",
+    "verse_id": 120,
+    "verseNumber": 1,
+    "description": "A1 Eng Ch3 V1"
+  },
+  {
+    "id": 4,
+    "authorName": "Author B",
+    "author_id": 2,
+    "language_id": 2,
+    "lang": "hindi",
+    "verse_id": 2,
+    "verseNumber": 2,
+    "description": "A2 Hin Ch1 V2"
+  },
+  {
+    "id": 5,
+    "authorName": "Author B",
+    "author_id": 2,
+    "language_id": 2,
+    "lang": "hindi",
+    "verse_id": 49,
+    "verseNumber": 2,
+    "description": "A2 Hin Ch2 V2"
+  },
+  {
+    "id": 6,
+    "authorName": "Author C",
+    "author_id": 3,
+    "language_id": 3,
+    "lang": "sanskrit",
+    "verse_id": 121,
+    "verseNumber": 2,
+    "description": "A3 San Ch3 V2"
+  }
+]
