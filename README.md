@@ -33,12 +33,18 @@ Currently these functions are in a separate frontend project. [app\lib\datarest.
   -	Gets chapters.json and then filters the data to return only specified chapter's data (chapter metadata)
 - getVersesForChapter(chapterNumber: string)
   -	Gets verses.json and then filters the data to return only verses data (verses metatdata) for specified chapter
+- getVerseMeta(verseId: string)
+  -	Gets verses.json and then filters the data to return only specified verse's metadata. 
 - getTranslationsForChapter(chapterNumber: string)
   -	Gets translation.json, filters the data to pick up only specified chapter's translations data. Next it groups translation entries by verseId using a helper function: groupTranslationsByVerseId(translations: any)
     - After the above, accessing one particular translation author (translatorAuthorId) and one particular verse's (v.id) translation entry which includes translation text (description field) is done using the code (v.id is the verse Id which is unique across all verses in all chapters):  
 		- const translationEntry = groupedTranslationsbyVerseId[v.id].find((tr: any) => tr.author_id.toString() === translatorAuthorId);
-
-Commentary data access function is not yet implemented.
+- getTranslationsForVerse(verseId: string)
+  -	Gets translation.json, filters the data to pick up only specified verse's translations data.
+- getCommentariesForChapterAuthorLang(chapterNumber: string, authorId: string, langId: string)
+  -	Gets commentary JSON file for specified chapterNumber, authorId and langId. 
+- getCommentaryForVerseAuthorLang(verseId: string, authorId: string, langId: string)
+  - Gets commentary for specified verseId, authorId and langId. It uses getCommentariesForChapterAuthorLang function.
 
 ## About Project
 This project is service-oriented and not-for-profit, providing free access to the Bhagavad Gita data. This work has been supported by voluntary contributions from individuals who wished to encourage the effort. Currently the main developer is Ravi S. Iyer. 
