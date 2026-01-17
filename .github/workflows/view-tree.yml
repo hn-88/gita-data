@@ -1,0 +1,19 @@
+name: List Data Directory Tree
+
+on: workflow_dispatch
+
+jobs:
+  list-tree:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Install tree command
+        run: sudo apt-get update && sudo apt-get install -y tree
+      
+      - name: List data directory tree
+        run: |
+          echo "Tree view of data directory:"
+          tree data
