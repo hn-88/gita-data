@@ -248,7 +248,8 @@
             app.innerHTML = html;
 
             // 3. Trigger Commentary Fetching (Async)
-            loadAllCommentaries(chapterId, verseId);
+            const globalId = verseData ? verseData.verse_order : null;
+            loadAllCommentaries(chapterId, globalId);
         }
 
         async function loadAllCommentaries(chapterId, globalVerseId) {
