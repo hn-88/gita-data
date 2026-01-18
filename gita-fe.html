@@ -251,58 +251,59 @@
             loadAllCommentaries(chapterId, verseId);
         }
 
-        async function loadAllCommentaries(chapterId, verseId) {
+        async function loadAllCommentaries(chapterId, globalVerseId) {
             const container = document.getElementById('commentaries-container');
             const loadingIndicator = document.getElementById('loading-comms');
+        
+            // 1. DEBUG: Hardcode to Swami Sivananda (ID 16) and English (ID 1)
+            const debugAuthor = { id: 16, name: "Swami Sivananda" }; 
+            const debugLangId = 1;
+        
+            console.log("--- DEBUG START ---");
+            console.log("Looking for Global Verse ID:", globalVerseId);
             
-            // Get all authors
-            const authors = state.authors;
-            if(!authors.length) {
-                loadingIndicator.innerText = "No author data found.";
-                return;
-            }
-
-            let foundCount = 0;
-
-            // Strategy: Iterate authors, assume folders based on tree view or try common ones.
-            // Since we want "All available", we create a promise for every likely combination.
+            // 2. Construct the specific path
+            // Path structure: commentaries/author16/lang1/chapterX.json
+            const path = `commentaries/author${debugAuthor.id}/lang${debugLangId}/chapter${chapterId}.json`;
             
-            const fetchPromises = authors.map(async (author) => {
-                // Try to find this author's commentary in likely language folders
-                // We fetch in parallel for this specific author
-                for (const langId of KNOWN_LANGS) {
-                    const path = `commentaries/author${author.id}/lang${langId}/chapter${chapterId}.json`;
-                    const data = await fetchJSON(path);
-                    // debug
-                    console.log("langId is");
-                    console.log(langId);
-                    console.log(path);
-                    
-                    if (data) {
-                        // Locate specific verse in the file
-                        // The file structure is usually an array of objects
-                        const entry = data.find(v => v.verse_number == verseId || v.id == verseId);
-                        console.log("inside if data");
-                        if (entry) {
-                            console.log("inside if entry");
-                            const text = entry.text || entry.description || entry.commentary;
-                            if (text && text.trim().length > 0) {
-                                appendCommentaryCard(container, author.name, langId, text);
-                                foundCount++;
-                            }
-                        }
-                    }
-                }
-            });
-
-            await Promise.all(fetchPromises);
-
+            console.log("langId is");
+            console.log(debugLangId);
+            console.log("Fetching path:", path);
+        
+            // 3. Fetch the data
+            const data = await fetchJSON(path);
+        
+            // Clear loading indicator
             loadingIndicator.style.display = 'none';
-            if (foundCount === 0) {
-                container.innerHTML += `<div class="p-4 bg-yellow-50 border border-yellow-200 rounded text-gray-600">No commentaries found for this specific verse.</div>`;
+        
+            if (data) {
+                console.log("File found. Searching for verse match...");
+        
+                // 4. Find the specific verse entry. 
+                // The JSON keys provided are 'verse_id' or 'verseNumber'.
+                // We match these against the 'globalVerseId' (verse_order) passed from renderVerse.
+                const entry = data.find(c => c.verse_id === globalVerseId || c.verseNumber === globalVerseId);
+        
+                if (entry) {
+                    console.log("Match found:", entry);
+                    // Use 'description' or 'commentary' or 'text' depending on the JSON format
+                    const textContent = entry.description || entry.commentary || entry.text;
+                    
+                    if (textContent) {
+                        appendCommentaryCard(container, debugAuthor.name, debugLangId, textContent);
+                    } else {
+                        container.innerHTML += `<div class="p-2 text-red-500">Entry found but text content is empty.</div>`;
+                    }
+                } else {
+                    console.warn(`No entry found in ${path} for Global ID ${globalVerseId}`);
+                    container.innerHTML += `<div class="p-2 text-gray-500">No commentary found for Author 16 in this chapter for this verse.</div>`;
+                }
+            } else {
+                console.error("Failed to fetch file:", path);
+                container.innerHTML += `<div class="p-2 text-red-500">Could not find commentary file: ${path}</div>`;
             }
         }
-
+        
         function appendCommentaryCard(container, authorName, langId, text) {
             // Helper to map Lang ID to Name
             const langMap = { '1': 'English', '2': 'Hindi', '3': 'Sanskrit' };
