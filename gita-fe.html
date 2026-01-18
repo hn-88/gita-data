@@ -90,6 +90,7 @@
         async function loadGlobalData() {
             state.authors = await fetchJSON('authors.json') || [];
             state.chapters = await fetchJSON('chapters.json');
+            state.authorMap = await fetchJSON('author_languages.json') || {};
             
             // Mock data if chapters.json is missing (for demo purposes)
             if(!state.chapters || state.chapters.length === 0) {
@@ -255,53 +256,49 @@
         async function loadAllCommentaries(chapterId, globalVerseId) {
             const container = document.getElementById('commentaries-container');
             const loadingIndicator = document.getElementById('loading-comms');
-        
-            // 1. DEBUG: Hardcode to Swami Sivananda (ID 16) and English (ID 1)
-            const debugAuthor = { id: 16, name: "Swami Sivananda" }; 
-            const debugLangId = 1;
-        
-            console.log("--- DEBUG START ---");
-            console.log("Looking for Global Verse ID:", globalVerseId);
             
-            // 2. Construct the specific path
-            // Path structure: commentaries/author16/lang1/chapterX.json
-            const path = `commentaries/author${debugAuthor.id}/lang${debugLangId}/chapter${chapterId}.json`;
-            
-            console.log("langId is");
-            console.log(debugLangId);
-            console.log("Fetching path:", path);
+            // 1. Filter authors who actually have data in the mapping
+            const authors = state.authors.filter(a => state.authorMap[a.id]);
         
-            // 3. Fetch the data
-            const data = await fetchJSON(path);
+            if(!authors.length) {
+                loadingIndicator.innerText = "No author mappings found.";
+                return;
+            }
         
-            // Clear loading indicator
-            loadingIndicator.style.display = 'none';
+            let foundCount = 0;
         
-            if (data) {
-                console.log("File found. Searching for verse match...");
+            // 2. Map through authors, but ONLY use the languages defined in the JSON
+            const fetchPromises = authors.map(async (author) => {
+                
+                // Get valid languages for this specific author (e.g., [1] for author 16)
+                const validLangs = state.authorMap[author.id]; 
         
-                // 4. Find the specific verse entry. 
-                // The JSON keys provided are 'verse_id' or 'verseNumber'.
-                // We match these against the 'globalVerseId' (verse_order) passed from renderVerse.
-                const entry = data.find(c => c.verse_id === globalVerseId || c.verseNumber === globalVerseId);
-        
-                if (entry) {
-                    console.log("Match found:", entry);
-                    // Use 'description' or 'commentary' or 'text' depending on the JSON format
-                    const textContent = entry.description || entry.commentary || entry.text;
+                for (const langId of validLangs) {
+                    const path = `commentaries/author${author.id}/lang${langId}/chapter${chapterId}.json`;
                     
-                    if (textContent) {
-                        appendCommentaryCard(container, debugAuthor.name, debugLangId, textContent);
-                    } else {
-                        container.innerHTML += `<div class="p-2 text-red-500">Entry found but text content is empty.</div>`;
+                    // Now this fetch is guaranteed to exist (mostly)
+                    const data = await fetchJSON(path);
+                    
+                    if (data) {
+                        // Match verse using globalVerseId (verse_order)
+                        const entry = data.find(c => c.verse_id === globalVerseId || c.verseNumber === globalVerseId);
+                        
+                        if (entry) {
+                            const textContent = entry.description || entry.commentary || entry.text;
+                            if (textContent && textContent.trim().length > 0) {
+                                appendCommentaryCard(container, author.name, langId, textContent);
+                                foundCount++;
+                            }
+                        }
                     }
-                } else {
-                    console.warn(`No entry found in ${path} for Global ID ${globalVerseId}`);
-                    container.innerHTML += `<div class="p-2 text-gray-500">No commentary found for Author 16 in this chapter for this verse.</div>`;
                 }
-            } else {
-                console.error("Failed to fetch file:", path);
-                container.innerHTML += `<div class="p-2 text-red-500">Could not find commentary file: ${path}</div>`;
+            });
+        
+            await Promise.all(fetchPromises);
+            
+            loadingIndicator.style.display = 'none';
+            if (foundCount === 0) {
+                container.innerHTML += `<div class="p-4 bg-yellow-50 text-gray-600">No commentaries found for this verse.</div>`;
             }
         }
         
