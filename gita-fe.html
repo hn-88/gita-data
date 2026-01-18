@@ -273,13 +273,18 @@
                 for (const langId of KNOWN_LANGS) {
                     const path = `commentaries/author${author.id}/lang${langId}/chapter${chapterId}.json`;
                     const data = await fetchJSON(path);
+                    // debug
+                    console.log("langId is");
+                    console.log(langId);
+                    console.log(path);
                     
                     if (data) {
                         // Locate specific verse in the file
                         // The file structure is usually an array of objects
                         const entry = data.find(v => v.verse_number == verseId || v.id == verseId);
-                        
+                        console.log("inside if data");
                         if (entry) {
+                            console.log("inside if entry");
                             const text = entry.text || entry.description || entry.commentary;
                             if (text && text.trim().length > 0) {
                                 appendCommentaryCard(container, author.name, langId, text);
